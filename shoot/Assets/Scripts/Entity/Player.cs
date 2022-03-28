@@ -23,6 +23,7 @@ public class Player : Entity
         // Hp = 100;
         Speed = 0.2f;
         Damage = 1;
+        BulletType = PoolCode.PlayerBullet;
     }
 
     // Update is called once per frame
@@ -74,7 +75,7 @@ public class Player : Entity
 
     private void SingleShoot()
     {
-        var bullet = PoolManager.Instance.CreatPrefab(PoolCode.PlayerBullet);
+        var bullet = PoolManager.Instance.CreatPrefab(BulletType);
         Shoot(bullet, transform.position);
     }
     
@@ -92,7 +93,7 @@ public class Player : Entity
         for (var i = 0; i < level; i++)
         {
             var setPosition = new Vector3(position / n , 0, 0);
-            var bullet = PoolManager.Instance.CreatPrefab(PoolCode.PlayerBullet);
+            var bullet = PoolManager.Instance.CreatPrefab(BulletType);
             Shoot(bullet, transform.position + setPosition);
             position += d;
         }
