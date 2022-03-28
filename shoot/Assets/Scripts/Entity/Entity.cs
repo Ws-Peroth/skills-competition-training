@@ -13,6 +13,7 @@ public abstract class Entity : MonoBehaviour
     [field: SerializeField] protected int Damage { get; set; }
     
     [field: SerializeField] protected PoolCode EntityType { get; set; }
+    [field: SerializeField] protected PoolCode BulletType { get; set; }
     protected abstract void Move();
     public abstract void Damaged(float damage);
     

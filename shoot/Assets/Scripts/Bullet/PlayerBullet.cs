@@ -23,7 +23,7 @@ public class PlayerBullet : Bullet
 
     protected override void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.CompareTag("Enemy"))
+        if (col.CompareTag(TargetTag))
         {
             col.GetComponent<Entity>().Damaged(BulletDamage);
             PoolManager.Instance.DestroyPrefab(gameObject, BulletType);
