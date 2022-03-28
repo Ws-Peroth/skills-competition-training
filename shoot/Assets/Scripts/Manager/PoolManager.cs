@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -19,39 +20,26 @@ public enum PoolCode
     UpgradeCovidBoss,
     UpgradeCovidBossBullet,
 }
+
 public class PoolManager : MonoBehaviour
 {
     #region SetPoolData
-    [SerializeField] private GameObject playerBulletPrefab;
-    [SerializeField] private GameObject bacteriaPrefab;
-    [SerializeField] private GameObject virusPrefab;
-    [SerializeField] private GameObject virusBulletPrefab;
-    [SerializeField] private GameObject germPrefab;
-    [SerializeField] private GameObject germBulletPrefab;
-    [SerializeField] private GameObject cancerPrefab;
-    [SerializeField] private GameObject cancerBulletPrefab;
-    [SerializeField] private GameObject covidBossPrefab;
-    [SerializeField] private GameObject covidBossBulletPrefab;
-    [SerializeField] private GameObject upgradeCovidBossPrefab;
-    [SerializeField] private GameObject upgradeCovidBossBulletPrefab;
-    public static PoolManager Instance { get; set; }
+    [Header("0. playerBulletPrefab")]
+    [Header("1. bacteriaPrefab")]
+    [Header("2, 3. virusPrefab, virusBulletPrefab")]
+    [Header("4, 5. germPrefab, germBulletPrefab")]
+    [Header("6, 7. cancerPrefab, cancerBulletPrefab")]
+    [Header("8, 9. covidBossPrefab, covidBossBulletPrefab")]
+    [Header("10, 11. upgradeCovidBossPrefab, upgradeCovidBossBulletPrefab")]
+
     
-    private readonly Queue<GameObject> _playerBulletPool = new Queue<GameObject>();
-    private readonly Queue<GameObject> _bacteriaPool = new Queue<GameObject>();
-    private readonly Queue<GameObject> _virusPool = new Queue<GameObject>();
-    private readonly Queue<GameObject> _virusBulletPool = new Queue<GameObject>();
-    private readonly Queue<GameObject> _germPool = new Queue<GameObject>();
-    private readonly Queue<GameObject> _germBulletPool = new Queue<GameObject>();
-    private readonly Queue<GameObject> _cancerPool = new Queue<GameObject>();
-    private readonly Queue<GameObject> _cancerBulletPool = new Queue<GameObject>();
-    private readonly Queue<GameObject> _covidBossPool = new Queue<GameObject>();
-    private readonly Queue<GameObject> _covidBossBulletPool = new Queue<GameObject>();
-    private readonly Queue<GameObject> _upgradeCovidBossPool = new Queue<GameObject>();
-    private readonly Queue<GameObject> _upgradeCovidBossBulletPool = new Queue<GameObject>();
+    public GameObject[] _prefabCombine;
+    public static PoolManager Instance { get; set; }
+    private Queue<GameObject>[] _poolCombine = new Queue<GameObject>[12];
+    
 
-    private Queue<GameObject>[] _poolCombine;
-    private GameObject[] _prefabCombine;
 
+    
     private readonly Dictionary<PoolCode, int> _poolCode = new Dictionary<PoolCode, int>()
     {
         {PoolCode.PlayerBullet, 0},
@@ -77,36 +65,12 @@ public class PoolManager : MonoBehaviour
         
         Instance = this;
 
-        _poolCombine = new[]
+        _poolCombine = new Queue<GameObject>[12];
+
+        for (var i = 0; i < _poolCombine.Length; i++)
         {
-            _playerBulletPool,              // 0
-            _bacteriaPool,                  // 1
-            _virusPool,                     // 2
-            _virusBulletPool,               // 3
-            _germPool,                      // 4
-            _germBulletPool,                // 5
-            _cancerPool,                    // 6
-            _cancerBulletPool,              // 7
-            _covidBossPool,                 // 8
-            _covidBossBulletPool,           // 9
-            _upgradeCovidBossPool,          // 10
-            _upgradeCovidBossBulletPool,    // 11
-        };
-        _prefabCombine = new[]
-        {
-            playerBulletPrefab,
-            bacteriaPrefab,
-            virusPrefab,
-            virusBulletPrefab,
-            germPrefab,
-            germBulletPrefab,
-            cancerPrefab,
-            cancerBulletPrefab,
-            covidBossPrefab,
-            covidBossBulletPrefab,
-            upgradeCovidBossPrefab,
-            upgradeCovidBossBulletPrefab,
-        };
+            _poolCombine[i] = new Queue<GameObject>();
+        }
     }
 
     #endregion
