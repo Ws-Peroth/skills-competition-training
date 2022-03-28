@@ -134,4 +134,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61a68e36c6516e84ab583a3324ef20c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0
+  <IsDestroyed>k__BackingField: 0
+  <Hp>k__BackingField: 0
+  <Speed>k__BackingField: 0
+  <Damage>k__BackingField: 0
+  <EntityType>k__BackingField: 0

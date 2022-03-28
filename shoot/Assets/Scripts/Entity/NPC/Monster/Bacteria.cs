@@ -7,6 +7,15 @@ using Random = UnityEngine.Random;
 
 public class Bacteria : Entity
 {
+    public override void InitializeBaseData()
+    {
+        // print("Init Bacteria");
+        Hp = 7;
+        Speed = 0.07f;
+        Damage = 2;
+        EntityType = PoolCode.Bacteria;
+        IsDestroyed = false;
+    }
     // Update is called once per frame
     void FixedUpdate()
     {
@@ -20,11 +29,12 @@ public class Bacteria : Entity
 
     public override void Damaged(float damage)
     {
-        print($"[Bacteria] Damaged : Hp = {Hp -= damage}");
+        Hp -= damage;
+        // print($"[Bacteria] Damaged : Hp = {Hp}");
         if (Hp == 0)
         {
             IsDestroyed = true;
-            PoolManager.Instance.DestroyPrefab(gameObject, PoolCode.Bacteria);
+            PoolManager.Instance.DestroyPrefab(gameObject, EntityType);
         }
     }
 
@@ -33,20 +43,11 @@ public class Bacteria : Entity
         return;
     }
 
-    public override void InitializeBaseData()
-    {
-        print("Init Bacteria");
-        Hp = 7;
-        Speed = 0.07f;
-        Damage = 2;
-        EntityType = PoolCode.Bacteria;
-    }
-
     protected override void OnBecameInvisible()
     {
         if (IsDestroyed)
         {
-            print("Destroyed");
+            // print("Destroyed");
             return;
         }
 
