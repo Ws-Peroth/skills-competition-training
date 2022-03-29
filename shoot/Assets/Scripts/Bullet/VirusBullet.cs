@@ -4,6 +4,16 @@ using UnityEngine;
 
 public class VirusBullet : Bullet
 {
+    protected override void InitializeBaseData()
+    {
+        BulletDirection = Vector3.down;
+        BulletType = PoolCode.VirusBullet;
+        TargetTag = "Player";
+        // Enemy Input
+        // => float bulletSpeed
+        // => int bulletDamage
+    }
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -29,16 +39,6 @@ public class VirusBullet : Bullet
             PoolManager.Instance.DestroyPrefab(gameObject, BulletType);
         }
         base.OnTriggerEnter2D(col);
-    }
-
-    protected override void InitializeBaseData()
-    {
-        BulletDirection = Vector3.down;
-        BulletType = PoolCode.VirusBullet;
-        TargetTag = "Player";
-        // Enemy Input
-        // => float bulletSpeed
-        // => int bulletDamage
     }
 
     private void Move()
