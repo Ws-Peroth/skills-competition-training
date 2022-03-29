@@ -8,18 +8,21 @@ using UnityEngine.Serialization;
 public class Player : Entity
 {
     [SerializeField] private Rigidbody2D playerRigidBody;
-    [SerializeField] private int level;
-    private const float DelayTime = 0.1f;
+    public int power;
+    public bool isUnbreakable;
+    public float unbreakableTime;
+    private const float AttackDelayTime = 0.1f;
     private float _timer;
 
     void Start()
     {
         InitializeBaseData();
+        StartCoroutine(AttackRoutine());
     }
     
     public override void InitializeBaseData()
     {
-        level = 1;
+        power = 1;
         // Hp = 100;
         Speed = 0.2f;
         Damage = 1;
@@ -30,11 +33,19 @@ public class Player : Entity
     void Update()
     {
         _timer += Time.deltaTime;
+    }
 
-        if (_timer > DelayTime && Input.GetKey(KeyCode.Space))
+    private IEnumerator AttackRoutine()
+    {
+        while (true)
         {
-            Attack();
-            _timer = 0;
+            if (Input.GetKey(KeyCode.Space))
+            {
+                Attack();
+                yield return new WaitForSeconds(AttackDelayTime);
+            }
+
+            yield return null;
         }
     }
 
@@ -65,7 +76,7 @@ public class Player : Entity
 
     protected override void Attack()
     {
-        if (level <= 1)
+        if (power <= 1)
         {
             SingleShoot();
             return;
@@ -88,9 +99,9 @@ public class Player : Entity
         
         const float n = 8f; // 단위 일반화 변수
         const int d = 2;    // 위치의 공차
-        var position = 1 - level;   // 초기 위치
+        var position = 1 - power;   // 초기 위치
         
-        for (var i = 0; i < level; i++)
+        for (var i = 0; i < power; i++)
         {
             var setPosition = new Vector3(position / n , 0, 0);
             var bullet = PoolManager.Instance.CreatPrefab(BulletType);
@@ -116,4 +127,13 @@ public class Player : Entity
     }
     
     protected override void OnBecameInvisible() { return; }
+
+    protected override void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.CompareTag("Item"))
+        {
+            var item = col.GetComponent<Item>();
+            item.Effect(this);
+        }
+    }
 }
