@@ -13,11 +13,36 @@ public enum DamageType
 
 public class GameManager : MonoBehaviour
 {
+    private Coroutine[] _spawnRoutine;
+    
     [field:SerializeField]
     public float Pain { get; set; }
     [field:SerializeField]
     public float Hp { get; set; }
     public static GameManager Instance { get; set; }
+
+    #region MonsterSpawnInformation
+
+    private class SpawnData
+    {
+        public float Y { get; set; }
+        public (float start, float end) X { get; set; }
+        public (float start, float end) Delay { get; set; }
+    }
+
+    private readonly Dictionary<PoolCode, SpawnData> _spawnerDictionary = new Dictionary<PoolCode, SpawnData>
+            {
+                // Bacteria
+                {PoolCode.Bacteria, new SpawnData { Y = 5.5f, X = (-2.7f, 2.7f), Delay = (1f, 3f)}},
+                // Germ
+                {PoolCode.Germ,     new SpawnData { Y = 5.5f, X = (-2.7f, 2.7f), Delay = (3f, 5f)}},
+                // Virus
+                {PoolCode.Virus,    new SpawnData { Y = 5.5f, X = (-2.7f, 2.7f), Delay = (5f, 7f)}},
+                // Cancer
+                {PoolCode.Cancer,    new SpawnData { Y = 5.5f, X = (-2.7f, 2.7f), Delay = (5f, 7f)}},
+            };
+    
+    #endregion
     
     private void Awake()
     {
@@ -29,46 +54,74 @@ public class GameManager : MonoBehaviour
 
         Instance = this;
     }
-
-    public const float BacteriaSpawnY = 5.5f; 
-    public const float VirusSpawnY = 5.5f; 
-
-
     private void Start()
     {
         Pain = 0;
         Hp = 100;
-        
-        StartCoroutine(BacteriaSpawnRoutine());
-        StartCoroutine(VirusSpawnRoutine());
+
+        _spawnRoutine = new[]
+        {
+            StartCoroutine(BacteriaSpawnRoutine()),
+            StartCoroutine(VirusSpawnRoutine()),
+            StartCoroutine(GermSpawnRoutine()),
+            StartCoroutine(CancerSpawnRoutine()),
+        };
     }
 
     private IEnumerator BacteriaSpawnRoutine()
     {
+        yield return new WaitForSeconds(1f);
+        
         while (true)
         {
-            var mob = PoolManager.Instance.CreatPrefab(PoolCode.Bacteria);
-            mob.transform.position = new Vector3(Random.Range(-8, 8), BacteriaSpawnY, 0);
-            ActiveMob(mob);
-            yield return new WaitForSeconds(Random.Range(1f, 3f));
+            var delay = Spawn(PoolCode.Bacteria);
+            yield return new WaitForSeconds(delay);
         }
     }
-    
+
     private IEnumerator VirusSpawnRoutine()
     {
+        yield return new WaitForSeconds(8f);
+        
         while (true)
         {
-            Debug.Log($"[Virus] Spawn");
-            var mob = PoolManager.Instance.CreatPrefab(PoolCode.Virus);
-            mob.transform.position = new Vector3(Random.Range(-8, 8), VirusSpawnY, 0);
-            ActiveMob(mob);
-            
-            var randomDelay = Random.Range(3f, 6f);
-            Debug.Log($"[Virus] Delay : {randomDelay.ToString()}");
-            yield return new WaitForSeconds(randomDelay);
+            var delay = Spawn(PoolCode.Virus);
+            yield return new WaitForSeconds(delay);
         }
     }
     
+    private IEnumerator GermSpawnRoutine()
+    {
+        yield return new WaitForSeconds(15f);
+        
+        while (true)
+        {
+            var delay = Spawn(PoolCode.Germ);
+            yield return new WaitForSeconds(delay);
+        }
+    }
+    
+    private IEnumerator CancerSpawnRoutine()
+    {
+        yield return new WaitForSeconds(25f);
+        
+        while (true)
+        {
+            var delay = Spawn(PoolCode.Cancer);
+            yield return new WaitForSeconds(delay);
+        }
+    }
+
+    private static float RandNum((float start, float end) tuple) => Random.Range(tuple.start, tuple.end);
+    
+    private float Spawn(PoolCode monsterType)
+    {
+        var spawnData = _spawnerDictionary[monsterType];
+        var mob = PoolManager.Instance.CreatPrefab(monsterType);
+        mob.transform.position = new Vector3(RandNum(spawnData.X), spawnData.Y, 0);
+        ActiveMob(mob);
+        return RandNum(spawnData.Delay);
+    }
 
     private static void ActiveMob(GameObject mob)
     {

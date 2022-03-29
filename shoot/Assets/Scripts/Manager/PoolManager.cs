@@ -19,6 +19,13 @@ public enum PoolCode
     CovidBossBullet,
     UpgradeCovidBoss,
     UpgradeCovidBossBullet,
+    
+    PowerUpItem,
+    HpHealItem,
+    PainDownItem,
+    ScoreUpItem,
+    UnbreakableItem,
+    DamageUpItem,
 }
 
 public class PoolManager : MonoBehaviour
@@ -31,14 +38,10 @@ public class PoolManager : MonoBehaviour
     [Header("6, 7. cancerPrefab, cancerBulletPrefab")]
     [Header("8, 9. covidBossPrefab, covidBossBulletPrefab")]
     [Header("10, 11. upgradeCovidBossPrefab, upgradeCovidBossBulletPrefab")]
-
     
     public GameObject[] _prefabCombine;
     public static PoolManager Instance { get; set; }
     private Queue<GameObject>[] _poolCombine = new Queue<GameObject>[12];
-    
-
-
     
     private readonly Dictionary<PoolCode, int> _poolCode = new Dictionary<PoolCode, int>()
     {
