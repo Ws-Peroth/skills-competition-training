@@ -1,17 +1,16 @@
-
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class Virus : Entity
 {
     private PoolCode _bulletType;
+    
+    private readonly (float start, float end) _attackDelay = (1f, 1.5f);
     public override void InitializeBaseData()
     {
         // print("Init Virus");
-        Hp = 7;
+        Hp = 25;
         Speed = 0.04f;
         Damage = 2;
         EntityType = PoolCode.Virus;
@@ -26,10 +25,12 @@ public class Virus : Entity
 
     private IEnumerator AttackPattern()
     {
+        yield return new WaitForSeconds(0.2f);
+        
         while (true)
         {
-            yield return new WaitForSeconds(Random.Range(0.5f, 1));
             Attack();
+            yield return new WaitForSeconds(Random.Range(_attackDelay.start, _attackDelay.end));
         }
     }
     
@@ -46,7 +47,7 @@ public class Virus : Entity
     public override void Damaged(float damage)
     {
         Hp -= damage;
-        // print($"[Bacteria] Damaged : Hp = {Hp}");
+        
         if (Hp == 0)
         {
             IsDestroyed = true;
@@ -56,8 +57,13 @@ public class Virus : Entity
 
     protected override void Attack()
     {
-        var bullet = PoolManager.Instance.CreatPrefab(BulletType);
-        Shoot(bullet, transform.position);
+        for (var i = 0; i < 5; i++)
+        {
+            var bullet = PoolManager.Instance.CreatPrefab(BulletType);
+            Shoot(bullet, transform.position);
+            // i = 0 1 2 3 4
+            bullet.transform.Rotate(new Vector3(0, 0, (i - 2) * 10));
+        }
     }
 
     private static void Shoot(GameObject bullet, Vector3 position)

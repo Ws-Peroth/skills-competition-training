@@ -10,8 +10,8 @@ public class Bacteria : Entity
     public override void InitializeBaseData()
     {
         // print("Init Bacteria");
-        Hp = 7;
-        Speed = 0.07f;
+        Hp = 5;
+        Speed = 0.1f;
         Damage = 2;
         EntityType = PoolCode.Bacteria;
         IsDestroyed = false;
