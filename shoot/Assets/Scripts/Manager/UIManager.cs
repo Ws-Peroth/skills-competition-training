@@ -26,6 +26,5 @@ public class UIManager : MonoBehaviour
         hpText.text = $"{hp:F0}%";
         painText.text = $"{pain:F0}%";
         weaponLevelText.text = $"Weapon Level : {power}";
-
     }
 }

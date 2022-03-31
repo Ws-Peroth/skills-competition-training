@@ -1,9 +1,5 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public enum PoolCode
 {
@@ -46,33 +42,12 @@ public class PoolManager : MonoBehaviour
     [Header("16, 17. PainDownItem, ScoreUpItem")]
     [Header("18, 19. UnbreakableItem, DamageUpItem")]
     
-    public GameObject[] _prefabCombine;
+    public GameObject[] prefabCombine;
     public static PoolManager Instance { get; set; }
     private Queue<GameObject>[] _poolCombine = new Queue<GameObject>[(int)PoolCode.MaxCount];
+
+    public static int PoolCodeIndex(PoolCode code) => (int) code;
     
-    private readonly Dictionary<PoolCode, int> _poolCode = new Dictionary<PoolCode, int>()
-    {
-        {PoolCode.PlayerBullet, 0},
-        {PoolCode.Bacteria, 1},
-        {PoolCode.Virus, 2},
-        {PoolCode.VirusBullet, 3},
-        {PoolCode.Germ, 4},
-        {PoolCode.GermBullet, 5},
-        {PoolCode.Cancer, 6},
-        {PoolCode.CancerBullet, 7},
-        {PoolCode.CovidBoss, 8},
-        {PoolCode.CovidBossBullet, 9},
-        {PoolCode.UpgradeCovidBoss, 10},
-        {PoolCode.UpgradeCovidBossBullet, 11},
-        {PoolCode.Erythrocyte, 12},
-        {PoolCode.Leukocyte, 13},
-        {PoolCode.PowerUpItem, 14},
-        {PoolCode.HpHealItem, 15},
-        {PoolCode.PainDownItem, 16},
-        {PoolCode.ScoreUpItem, 17},
-        {PoolCode.UnbreakableItem, 18},
-        {PoolCode.DamageUpItem, 19},
-    };
     private void Awake()
     {
         if (Instance != null)
@@ -92,21 +67,22 @@ public class PoolManager : MonoBehaviour
     }
 
     #endregion
+    
     private void Start()    
     {
         
     }
 
-    public void DestroyPrefab(GameObject bullet, PoolCode poolIndex)
+    public void DestroyPrefab(GameObject prefab, PoolCode poolIndex)
     {
-        var pool = _poolCombine[_poolCode[poolIndex]];
-        pool.Enqueue(bullet);
-        bullet.SetActive(false);
+        var pool = _poolCombine[PoolCodeIndex(poolIndex)];
+        pool.Enqueue(prefab);
+        prefab.SetActive(false);
     }
 
     public GameObject CreatPrefab(PoolCode poolIndex)
     {
-        var index = _poolCode[poolIndex];
+        var index = PoolCodeIndex(poolIndex);
         var pool = _poolCombine[index];
         
         if (pool.Count != 0)
@@ -114,10 +90,8 @@ public class PoolManager : MonoBehaviour
             return pool.Dequeue();
         }
 
-        var bullet = Instantiate(_prefabCombine[index], transform);
-        bullet.SetActive(false);
-        return bullet;
+        var prefab = Instantiate(prefabCombine[index], transform);
+        prefab.SetActive(false);
+        return prefab;
     }
-    
-    
 }

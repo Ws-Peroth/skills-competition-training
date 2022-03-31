@@ -13,27 +13,18 @@ public enum DamageType
 
 public class GameManager : MonoBehaviour
 {
-    private const float StageTimeA = 60; 
+    private const float StageTimeA = 1; 
     private const float StageTimeB = 60; 
     private const float BossDelay = 5;
-    
     private Coroutine[] _spawnRoutine;
-    
-    [field:SerializeField]
-    public float Pain { get; set; }
-    [field:SerializeField]
-    public float Hp { get; set; }
-    
-    [field:SerializeField]
-    public int Score { get; set; }
-    [field:SerializeField]
-    public bool IsUnbreakable { get; set; }
-    
+    [field:SerializeField] public float Pain { get; set; }
+    [field:SerializeField] public float Hp { get; set; }
+    [field:SerializeField] public int Score { get; set; }
+    [field:SerializeField] public bool IsUnbreakable { get; set; }
     public int Power { get; set; }
     public static GameManager Instance { get; set; }
 
     #region MonsterSpawnInformation
-
     private class SpawnData
     {
         public float Y { get; set; }
@@ -57,6 +48,8 @@ public class GameManager : MonoBehaviour
         {PoolCode.Leukocyte, new SpawnData {Y = 5.5f, X = (-2.7f, 2.7f), Delay = (1f, 2f)}},
         // CovidBoss
         {PoolCode.CovidBoss, new SpawnData {Y = 6.2f, X = (0f, 0f), Delay = (0f, 0f)}},
+        // UpgradeCovidBoss
+        {PoolCode.UpgradeCovidBoss, new SpawnData {Y = 6.2f, X = (0f, 0f), Delay = (0f, 0f)}},
     };
     
     #endregion
@@ -88,7 +81,6 @@ public class GameManager : MonoBehaviour
 
         StartCoroutine(GameRoutine());
     }
-
     private IEnumerator GameRoutine()
     {
         yield return new WaitForSeconds(StageTimeA);
@@ -99,9 +91,38 @@ public class GameManager : MonoBehaviour
         }
 
         yield return new WaitForSeconds(BossDelay);
-        Spawn(PoolCode.CovidBoss);
+        Spawn(PoolCode.UpgradeCovidBoss);
     }
 
+    public void StartStage2()
+    {
+        StartCoroutine(Stage2Routine());
+    }
+    private IEnumerator Stage2Routine()
+    {
+        yield return new WaitForSeconds(3f);
+        // UI Effect
+        Debug.Log("UI Effect");
+        yield return new WaitForSeconds(3f);
+        // Routine Reset
+        _spawnRoutine = new[]
+        {
+            StartCoroutine(BacteriaSpawnRoutine()),
+            StartCoroutine(VirusSpawnRoutine()),
+            StartCoroutine(GermSpawnRoutine()),
+            StartCoroutine(CancerSpawnRoutine()),
+            StartCoroutine(ErythrocyteSpawnRoutine()),
+            StartCoroutine(LeukocyteSpawnRoutine()),
+        };
+        yield return new WaitForSeconds(StageTimeB);
+        foreach (var coroutine in _spawnRoutine)
+        {
+            StopCoroutine(coroutine);
+        }
+        
+        yield return new WaitForSeconds(BossDelay);
+        Spawn(PoolCode.UpgradeCovidBoss);
+    }
     private IEnumerator BacteriaSpawnRoutine()
     {
         yield return new WaitForSeconds(1f);
