@@ -34,7 +34,7 @@ public class PlayerBullet : Bullet
         base.OnTriggerEnter2D(col);
     }
 
-    protected override void InitializeBaseData()
+    public override void InitializeBaseData()
     {
         BulletDirection = Vector3.up;
         BulletType = PoolCode.PlayerBullet;

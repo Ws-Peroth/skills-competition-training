@@ -12,11 +12,11 @@ public class CancerBullet : Bullet
         _direction = 0;
     }
 
-    protected override void InitializeBaseData()
+    public override void InitializeBaseData()
     {
         BulletDirection = Vector3.down;
         BulletType = PoolCode.CancerBullet;
-        TargetTag = "Player";
+        TargetTag = "HitBox";
         // Enemy Input
         // => float bulletSpeed
         // => int bulletDamage
@@ -43,7 +43,7 @@ public class CancerBullet : Bullet
     {
         if (col.CompareTag(TargetTag))
         {
-            col.GetComponent<Player>().Damaged(BulletDamage, DamageType.Hp);
+            col.GetComponentInParent<Player>().Damaged(BulletDamage, DamageType.Hp);
             PoolManager.Instance.DestroyPrefab(gameObject, BulletType);
         }
         base.OnTriggerEnter2D(col);

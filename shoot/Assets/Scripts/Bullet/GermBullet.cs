@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class GermBullet : Bullet
 {
-    protected override void InitializeBaseData()
+    public override void InitializeBaseData()
     {
         BulletDirection = Vector3.down;
         BulletType = PoolCode.GermBullet;
-        TargetTag = "Player";
+        TargetTag = "HitBox";
         // Enemy Input
         // => float bulletSpeed
         // => int bulletDamage
@@ -35,7 +35,7 @@ public class GermBullet : Bullet
     {
         if (col.CompareTag(TargetTag))
         {
-            col.GetComponent<Player>().Damaged(BulletDamage, DamageType.Hp);
+            col.GetComponentInParent<Player>().Damaged(BulletDamage, DamageType.Hp);
             PoolManager.Instance.DestroyPrefab(gameObject, BulletType);
         }
         base.OnTriggerEnter2D(col);

@@ -16,7 +16,7 @@ public abstract class Bullet : MonoBehaviour
     /// <summary>
     ///  Initialize Base Data : float bulletSpeed, Vector3 bulletDirection, int bulletDamage, PoolCode bulletType, string targetTag 
     /// </summary>
-    protected abstract void InitializeBaseData();
+    public abstract void InitializeBaseData();
     
     
     protected virtual void OnBecameInvisible() { }
