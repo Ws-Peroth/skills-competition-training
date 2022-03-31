@@ -19,13 +19,16 @@ public enum PoolCode
     CovidBossBullet,
     UpgradeCovidBoss,
     UpgradeCovidBossBullet,
-    
+    Erythrocyte,
+    Leukocyte,
     PowerUpItem,
     HpHealItem,
     PainDownItem,
     ScoreUpItem,
     UnbreakableItem,
     DamageUpItem,
+    
+    MaxCount
 }
 
 public class PoolManager : MonoBehaviour
@@ -38,10 +41,14 @@ public class PoolManager : MonoBehaviour
     [Header("6, 7. cancerPrefab, cancerBulletPrefab")]
     [Header("8, 9. covidBossPrefab, covidBossBulletPrefab")]
     [Header("10, 11. upgradeCovidBossPrefab, upgradeCovidBossBulletPrefab")]
+    [Header("12, 13. Erythrocyte, Leukocyte")]
+    [Header("14, 15. PowerUpItem, HpHealItem")]
+    [Header("16, 17. PainDownItem, ScoreUpItem")]
+    [Header("18, 19. UnbreakableItem, DamageUpItem")]
     
     public GameObject[] _prefabCombine;
     public static PoolManager Instance { get; set; }
-    private Queue<GameObject>[] _poolCombine = new Queue<GameObject>[12];
+    private Queue<GameObject>[] _poolCombine = new Queue<GameObject>[(int)PoolCode.MaxCount];
     
     private readonly Dictionary<PoolCode, int> _poolCode = new Dictionary<PoolCode, int>()
     {
@@ -57,6 +64,14 @@ public class PoolManager : MonoBehaviour
         {PoolCode.CovidBossBullet, 9},
         {PoolCode.UpgradeCovidBoss, 10},
         {PoolCode.UpgradeCovidBossBullet, 11},
+        {PoolCode.Erythrocyte, 12},
+        {PoolCode.Leukocyte, 13},
+        {PoolCode.PowerUpItem, 14},
+        {PoolCode.HpHealItem, 15},
+        {PoolCode.PainDownItem, 16},
+        {PoolCode.ScoreUpItem, 17},
+        {PoolCode.UnbreakableItem, 18},
+        {PoolCode.DamageUpItem, 19},
     };
     private void Awake()
     {
@@ -68,7 +83,7 @@ public class PoolManager : MonoBehaviour
         
         Instance = this;
 
-        _poolCombine = new Queue<GameObject>[12];
+        _poolCombine = new Queue<GameObject>[(int)PoolCode.MaxCount];
 
         for (var i = 0; i < _poolCombine.Length; i++)
         {
@@ -103,4 +118,6 @@ public class PoolManager : MonoBehaviour
         bullet.SetActive(false);
         return bullet;
     }
+    
+    
 }
