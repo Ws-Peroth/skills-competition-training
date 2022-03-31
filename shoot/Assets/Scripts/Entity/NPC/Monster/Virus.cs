@@ -71,6 +71,7 @@ public class Virus : Entity
     private void Shoot(GameObject bullet, Vector3 position)
     {
         var bulletScript = bullet.GetComponent<VirusBullet>();
+        bulletScript.InitializeBaseData();
         bulletScript.BulletDamage = Damage;
         bulletScript.BulletSpeed = 0.1f;
         bullet.transform.position = position;

@@ -22,6 +22,7 @@ public class Germ : Entity
     private void Shoot(GameObject bullet, Vector3 position)
     {
         var bulletScript = bullet.GetComponent<GermBullet>();
+        bulletScript.InitializeBaseData();
         bulletScript.BulletDamage = Damage;
         bulletScript.BulletSpeed = 0.2f;
         bullet.transform.position = position;

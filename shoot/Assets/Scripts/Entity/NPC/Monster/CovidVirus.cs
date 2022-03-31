@@ -12,7 +12,7 @@ public class CovidVirus : Entity
         // print("Init Cancer");
         Hp = 2500;
         Speed = 0.01f;
-        Damage = 5;
+        Damage = 20;
         Score = 20000;
         EntityType = PoolCode.CovidBoss;
         BulletType = PoolCode.CovidBossBullet;
@@ -22,6 +22,7 @@ public class CovidVirus : Entity
     private void Shoot(GameObject bullet, Vector3 position)
     {
         var bulletScript = bullet.GetComponent<CovidVirusBullet>();
+        bulletScript.InitializeBaseData();
         bulletScript.BulletDamage = Damage;
         bulletScript.BulletSpeed = 0.05f;
         bullet.transform.position = position;
@@ -40,7 +41,7 @@ public class CovidVirus : Entity
         
         while (true)
         {
-            var patternNumber = Random.Range(1, 2);
+            var patternNumber = Random.Range(0, 3);
             Debug.Log($"Pattern : {patternNumber}");
             switch (patternNumber)
             {
@@ -60,6 +61,7 @@ public class CovidVirus : Entity
                     break;
                 case 2:
                     Pattern3();
+                    yield return new WaitForSeconds(2);
                     break;
             }
             yield return new WaitForSeconds(2);
@@ -90,7 +92,7 @@ public class CovidVirus : Entity
     {
         for (var i = 0; i < 2; i++)
         {
-            GameManager.Instance.Spawn(PoolCode.Cancer);   
+            GameManager.Instance.Spawn(PoolCode.Virus);   
         }
     }
     protected override void Attack()
@@ -118,6 +120,7 @@ public class CovidVirus : Entity
         if (Hp <= 0)
         {
             IsDestroyed = true;
+            GameManager.Instance.StartStage2();
             GameManager.Instance.GetScore(Score);
             PoolManager.Instance.DestroyPrefab(gameObject, EntityType);
         }

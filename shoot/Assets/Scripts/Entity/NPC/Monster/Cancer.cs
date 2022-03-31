@@ -22,6 +22,7 @@ public class Cancer : Entity
     private void Shoot(GameObject bullet, Vector3 position)
     {
         var bulletScript = bullet.GetComponent<CancerBullet>();
+        bulletScript.InitializeBaseData();
         bulletScript.BulletDamage = Damage;
         bulletScript.BulletSpeed = 0.05f;
         bullet.transform.position = position;
