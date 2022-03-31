@@ -13,6 +13,7 @@ public class Bacteria : Entity
         Hp = 5;
         Speed = 0.1f;
         Damage = 2;
+        Score = 100;
         EntityType = PoolCode.Bacteria;
         IsDestroyed = false;
     }
@@ -31,9 +32,10 @@ public class Bacteria : Entity
     {
         Hp -= damage;
         // print($"[Bacteria] Damaged : Hp = {Hp}");
-        if (Hp == 0)
+        if (Hp <= 0)
         {
             IsDestroyed = true;
+            GameManager.Instance.GetScore(Score);
             PoolManager.Instance.DestroyPrefab(gameObject, EntityType);
         }
     }
@@ -47,7 +49,6 @@ public class Bacteria : Entity
     {
         if (IsDestroyed)
         {
-            // print("Destroyed");
             return;
         }
 
@@ -58,7 +59,7 @@ public class Bacteria : Entity
     {
         if (col.CompareTag("Player"))
         {
-            GameManager.Instance.Damaged(Damage / 2f, DamageType.Hp);
+            col.GetComponent<Player>().Damaged(Damage / 2f, DamageType.Hp);
         }
         base.OnTriggerEnter2D(col);
     }

@@ -12,16 +12,17 @@ public class Cancer : Entity
         // print("Init Cancer");
         Hp = 40;
         Speed = 0.04f;
-        Damage = 2;
+        Damage = 20;
+        Score = 1000;
         EntityType = PoolCode.Cancer;
         BulletType = PoolCode.CancerBullet;
         IsDestroyed = false;
     }
     
-    private static void Shoot(GameObject bullet, Vector3 position)
+    private void Shoot(GameObject bullet, Vector3 position)
     {
         var bulletScript = bullet.GetComponent<CancerBullet>();
-        bulletScript.BulletDamage = 1;
+        bulletScript.BulletDamage = Damage;
         bulletScript.BulletSpeed = 0.05f;
         bullet.transform.position = position;
         bullet.transform.rotation = Quaternion.identity;
@@ -60,9 +61,10 @@ public class Cancer : Entity
     {
         Hp -= damage;
         
-        if (Hp == 0)
+        if (Hp <= 0)
         {
             IsDestroyed = true;
+            GameManager.Instance.GetScore(Score);
             PoolManager.Instance.DestroyPrefab(gameObject, EntityType);
         }
     }
@@ -81,7 +83,6 @@ public class Cancer : Entity
     {
         if (IsDestroyed)
         {
-            // print("Destroyed");
             return;
         }
 
@@ -92,7 +93,7 @@ public class Cancer : Entity
     {
         if (col.CompareTag("Player"))
         {
-            GameManager.Instance.Damaged(Damage / 2f, DamageType.Hp);
+            col.GetComponent<Player>().Damaged(Damage / 2f, DamageType.Hp);
         }
         base.OnTriggerEnter2D(col);
     }

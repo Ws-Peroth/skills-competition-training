@@ -13,15 +13,16 @@ public class Germ : Entity
         Hp = 10;
         Speed = 0.04f;
         Damage = 4;
+        Score = 300;
         EntityType = PoolCode.Germ;
         BulletType = PoolCode.GermBullet;
         IsDestroyed = false;
     }
     
-    private static void Shoot(GameObject bullet, Vector3 position)
+    private void Shoot(GameObject bullet, Vector3 position)
     {
         var bulletScript = bullet.GetComponent<GermBullet>();
-        bulletScript.BulletDamage = 1;
+        bulletScript.BulletDamage = Damage;
         bulletScript.BulletSpeed = 0.2f;
         bullet.transform.position = position;
         bullet.transform.rotation = Quaternion.identity;
@@ -58,9 +59,10 @@ public class Germ : Entity
     {
         Hp -= damage;
         
-        if (Hp == 0)
+        if (Hp <= 0)
         {
             IsDestroyed = true;
+            GameManager.Instance.GetScore(Score);
             PoolManager.Instance.DestroyPrefab(gameObject, EntityType);
         }
     }
@@ -75,7 +77,6 @@ public class Germ : Entity
     {
         if (IsDestroyed)
         {
-            // print("Destroyed");
             return;
         }
 
@@ -86,7 +87,7 @@ public class Germ : Entity
     {
         if (col.CompareTag("Player"))
         {
-            GameManager.Instance.Damaged(Damage / 2f, DamageType.Hp);
+            col.GetComponent<Player>().Damaged(Damage / 2f, DamageType.Hp);
         }
         base.OnTriggerEnter2D(col);
     }
