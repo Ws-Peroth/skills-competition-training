@@ -9,9 +9,8 @@ public abstract class Entity : MonoBehaviour
     [field:SerializeField] public bool IsDestroyed { get; set; }
     [field:SerializeField] public float Hp { get; set; }
     [field:SerializeField] protected float Speed{ get; set; }
-
     [field: SerializeField] protected int Damage { get; set; }
-    
+    [field: SerializeField] protected int Score { get; set; }
     [field: SerializeField] protected PoolCode EntityType { get; set; }
     [field: SerializeField] protected PoolCode BulletType { get; set; }
     protected abstract void Move();

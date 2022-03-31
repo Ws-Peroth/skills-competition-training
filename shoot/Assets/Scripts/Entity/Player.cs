@@ -7,13 +7,82 @@ using UnityEngine.Serialization;
 
 public class Player : Entity
 {
-    [SerializeField] private Rigidbody2D playerRigidBody;
-    public int power;
-    public bool isUnbreakable;
-    public float unbreakableTime;
-    private const float AttackDelayTime = 0.1f;
-    private float _timer;
+    private readonly Color DefaultColor = new Color(0.3716981f, 0.488957f, 1, 1);
+    private readonly Color UnbreakableColor = new Color(0.3716981f, 0.488957f, 1, 0.5f);
 
+    [SerializeField] private SpriteRenderer playerSpriteRenderer;
+    [SerializeField] private Rigidbody2D playerRigidBody;
+    private const float AttackDelayTime = 0.1f;
+    public const float UnbreakableTime = 3f;
+    public const float UnbreakableEffectTime = 2.5f;
+    public const float UnbreakableDamagedTime = 1.5f;
+    public const float UnbreakableNonEffectTime = 0.5f;
+    public const float DamageUpTime = 5f;
+    private float _timer;
+    // public int Power { get; set; }
+    public float RemainUnbreakableTime { get; set; }
+    public float RemainDamageUpTime { get; set; }
+
+    #region ItemFunction
+
+    public void GetUnbreakableItem()
+    {
+        if (GameManager.Instance.IsUnbreakable)
+        {
+            return;
+        }
+
+        StartCoroutine(UnbreakableRoutine(UnbreakableTime));
+    }
+
+    public IEnumerator UnbreakableRoutine(float time)
+    {
+        if (GameManager.Instance.IsUnbreakable)
+        {
+            yield break;
+        }
+        GameManager.Instance.IsUnbreakable = true;
+
+        playerSpriteRenderer.color = UnbreakableColor;
+
+        yield return new WaitForSeconds(time - UnbreakableNonEffectTime);
+
+        playerSpriteRenderer.color = DefaultColor;
+
+        yield return new WaitForSeconds(UnbreakableNonEffectTime);
+        
+        GameManager.Instance.IsUnbreakable = false;
+    }
+
+    public void GetDamageUpItem()
+    {
+        if (RemainDamageUpTime > 0)
+        {
+            RemainDamageUpTime += DamageUpTime;
+            return;
+        }
+
+        StartCoroutine(DamageUpRoutine());
+    }
+    
+    private IEnumerator DamageUpRoutine()
+    {
+        Damage += 3;
+        RemainDamageUpTime += DamageUpTime;
+        
+        while (RemainDamageUpTime > 0)
+        {
+            var waitTime = RemainDamageUpTime;
+            yield return new WaitForSeconds(RemainDamageUpTime);
+            RemainDamageUpTime -= waitTime;
+        }
+
+        RemainDamageUpTime = 0;
+        Damage -= 3;
+    }
+    
+    #endregion
+    
     void Start()
     {
         InitializeBaseData();
@@ -22,33 +91,11 @@ public class Player : Entity
     
     public override void InitializeBaseData()
     {
-        power = 1;
-        // Hp = 100;
+        GameManager.Instance.Power = 1;
         Speed = 0.2f;
         Damage = 1;
         BulletType = PoolCode.PlayerBullet;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        _timer += Time.deltaTime;
-    }
-
-    private IEnumerator AttackRoutine()
-    {
-        while (true)
-        {
-            if (Input.GetKey(KeyCode.Space))
-            {
-                Attack();
-                yield return new WaitForSeconds(AttackDelayTime);
-            }
-
-            yield return null;
-        }
-    }
-
     private void FixedUpdate()
     {
         Move();
@@ -73,10 +120,22 @@ public class Player : Entity
             transform.Translate(Vector3.right * Speed);
         }
     }
+    private IEnumerator AttackRoutine()
+    {
+        while (true)
+        {
+            if (Input.GetKey(KeyCode.Space))
+            {
+                Attack();
+                yield return new WaitForSeconds(AttackDelayTime);
+            }
 
+            yield return null;
+        }
+    }
     protected override void Attack()
     {
-        if (power <= 1)
+        if (GameManager.Instance.Power <= 1)
         {
             SingleShoot();
             return;
@@ -99,9 +158,9 @@ public class Player : Entity
         
         const float n = 8f; // 단위 일반화 변수
         const int d = 2;    // 위치의 공차
-        var position = 1 - power;   // 초기 위치
+        var position = 1 - GameManager.Instance.Power;   // 초기 위치
         
-        for (var i = 0; i < power; i++)
+        for (var i = 0; i < GameManager.Instance.Power; i++)
         {
             var setPosition = new Vector3(position / n , 0, 0);
             var bullet = PoolManager.Instance.CreatPrefab(BulletType);
@@ -113,27 +172,36 @@ public class Player : Entity
     private void Shoot(GameObject bullet, Vector3 position)
     {        
         var bulletScript = bullet.GetComponent<PlayerBullet>();
-        bulletScript.BulletDamage = 1;
+        bulletScript.BulletDamage = Damage;
+        bulletScript.SetBulletColor();
         bulletScript.BulletSpeed = 0.2f;
         bullet.transform.position = position;
         bullet.transform.rotation = Quaternion.identity;
         bullet.SetActive(true);
     }
-
+    
     public override void Damaged(float damage)
     {
-        Debug.LogError("Do Not Use Damage(float damage) method in Player. Please use GameManager.Instance.Damaged(float damage, DamageType damageType)");
+        Debug.LogError("Do Not Use Damage(float damage) method in Player. Please use Player.Damaged(float damage, int damageType)");
         throw new NotImplementedException();
+    }
+
+    public void Damaged(float damage, DamageType damageType)
+    {
+        if (damageType == DamageType.Hp)
+        {
+            if (GameManager.Instance.IsUnbreakable)
+            {
+                return;
+            }
+            GameManager.Instance.Damaged(damage, DamageType.Hp);
+            StartCoroutine(UnbreakableRoutine(UnbreakableDamagedTime));
+            return;
+        }
+        
+        GameManager.Instance.Damaged(damage, DamageType.Pain);
     }
     
     protected override void OnBecameInvisible() { return; }
-
-    protected override void OnTriggerEnter2D(Collider2D col)
-    {
-        if (col.CompareTag("Item"))
-        {
-            var item = col.GetComponent<Item>();
-            item.Effect(this);
-        }
-    }
+    
 }
