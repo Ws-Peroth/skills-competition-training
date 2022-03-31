@@ -35,7 +35,7 @@ public class VirusBullet : Bullet
     {
         if (col.CompareTag(TargetTag))
         {
-            GameManager.Instance.Damaged(BulletDamage, DamageType.Hp);
+            col.GetComponent<Player>().Damaged(BulletDamage, DamageType.Hp);
             PoolManager.Instance.DestroyPrefab(gameObject, BulletType);
         }
         base.OnTriggerEnter2D(col);

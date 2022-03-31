@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerBullet : Bullet
 {
+    private readonly Color _defaultColor = new Color(0, 0.8861785f, 1, 1);
+    private readonly Color _enhanceColor = new Color(1, 0.4f, 0.4f, 1); 
+    [SerializeField] private SpriteRenderer bulletSpriteRenderer;
     // Start is called before the first frame update
     void Start()
     {
@@ -39,6 +42,11 @@ public class PlayerBullet : Bullet
         // Player Input
         // => float bulletSpeed
         // => int bulletDamage
+    }
+
+    public void SetBulletColor()
+    {
+        bulletSpriteRenderer.color = BulletDamage == 1 ? _defaultColor : _enhanceColor;
     }
 
     private void Move()

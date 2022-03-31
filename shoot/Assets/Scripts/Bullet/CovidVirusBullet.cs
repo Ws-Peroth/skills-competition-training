@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GermBullet : Bullet
+public class CovidVirusBullet : Bullet
 {
     protected override void InitializeBaseData()
     {
         BulletDirection = Vector3.down;
-        BulletType = PoolCode.GermBullet;
+        BulletType = PoolCode.CovidBossBullet;
         TargetTag = "Player";
         // Enemy Input
         // => float bulletSpeed
