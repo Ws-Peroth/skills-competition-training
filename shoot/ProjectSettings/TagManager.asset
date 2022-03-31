@@ -8,6 +8,8 @@ TagManager:
   - Bullet
   - Border
   - Item
+  - MoveBorder
+  - HitBox
   layers:
   - Default
   - TransparentFX
