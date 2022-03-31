@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class PainDownItem : Item
 {
+    public float PainDown { get; set; } = 30;
     public override void Effect(Player player)
     {
         var pain = GameManager.Instance.Pain;
-        GameManager.Instance.Pain = pain - 10 < 0 ? 0 : pain - 10;
+        GameManager.Instance.Pain = pain - PainDown < 0 ? 0 : pain - PainDown;
     }
     
     protected override void OnTriggerEnter2D(Collider2D col)
@@ -15,7 +16,7 @@ public class PainDownItem : Item
         if (col.CompareTag("Player"))
         {
             Effect(null);
-            // Destroy();
+            PoolManager.Instance.DestroyPrefab(gameObject, ItemType);
         }
         base.OnTriggerEnter2D(col);
     }

@@ -6,8 +6,8 @@ public class PowerItem : Item
 {
     public override void Effect(Player player)
     {
-        var power = player.power;
-        player.power = power + 1 > 5 ? 5 : power + 1;
+        var power = GameManager.Instance.Power;
+        GameManager.Instance.Power = power + 1 > 5 ? 5 : power + 1;
     }
 
     protected override void OnTriggerEnter2D(Collider2D col)
@@ -16,7 +16,7 @@ public class PowerItem : Item
         {
             var player = col.GetComponent<Player>();
             Effect(player);
-            // Destroy();
+            PoolManager.Instance.DestroyPrefab(gameObject, ItemType);
         }
         base.OnTriggerEnter2D(col);
     }
