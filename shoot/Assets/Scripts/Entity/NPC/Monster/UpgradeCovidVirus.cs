@@ -10,7 +10,7 @@ private PoolCode _bulletType;
     public override void InitializeBaseData()
     {
         // print("Init Cancer");
-        Hp = 2500;
+        Hp = 3000;
         Speed = 0.01f;
         Damage = 20;
         Score = 20000;
@@ -39,7 +39,7 @@ private PoolCode _bulletType;
     private IEnumerator AttackPattern()
     {
         yield return new WaitForSeconds(0.2f);
-        var rotate = 0;
+        var rotate = 0f;
         while (true)
         {
             var patternNumber = Random.Range(0, 3);
@@ -57,6 +57,7 @@ private PoolCode _bulletType;
                 case 1:
                     for (var i = 0; i < 5; i++)
                     {
+                        rotate += 4.5f;
                         Pattern2(rotate);
                         yield return new WaitForSeconds(1f);
                     }
@@ -64,7 +65,6 @@ private PoolCode _bulletType;
                     break;
                 case 2:
                     Pattern3();
-                    yield return new WaitForSeconds(2);
                     break;
             }
             yield return new WaitForSeconds(2);
@@ -75,27 +75,27 @@ private PoolCode _bulletType;
 
     private void Pattern1(float rotation)
     {
-        for (var i = 0; i < 36; i++)
+        for (var i = 0; i < 40; i++)
         {
             var bullet = PoolManager.Instance.CreatPrefab(BulletType);
             Shoot(bullet, transform.position, true);
-            bullet.transform.Rotate(new Vector3(0, 0, i * 10 + rotation));
+            bullet.transform.Rotate(new Vector3(0, 0, i * 9 + rotation));
         }
     }
     
     private void Pattern2(float rotation)
     {
-        for (var i = 0; i < 36; i++)
+        for (var i = 0; i < 40; i++)
         {
             var bullet = PoolManager.Instance.CreatPrefab(BulletType);
             Shoot(bullet, transform.position);
-            bullet.transform.Rotate(new Vector3(0, 0, i * 10  + rotation));
+            bullet.transform.Rotate(new Vector3(0, 0, i * 9  + rotation));
         }
     }
 
     private void Pattern3()
     {
-        for (var i = 0; i < 2; i++)
+        for (var i = 0; i < 3; i++)
         {
             GameManager.Instance.Spawn(PoolCode.Cancer);
         }
@@ -117,19 +117,26 @@ private PoolCode _bulletType;
             transform.Translate(Vector3.down * Speed);
         }
     }
-
+    
     public override void Damaged(float damage)
     {
+        if(Hp <= 0) return;
         Hp -= damage;
         
         if (Hp <= 0)
         {
-            Debug.Log("Ending");
-            IsDestroyed = true;
-            GameManager.Instance.GetScore(Score);
-            PoolManager.Instance.DestroyPrefab(gameObject, EntityType);
+            Killed();
         }
     }
+
+    public override void Killed()
+    {
+        Debug.Log("Ending");
+        IsDestroyed = true;
+        GameManager.Instance.GetScore(Score);
+        PoolManager.Instance.DestroyPrefab(gameObject, EntityType);
+    }
+    
     protected override void OnBecameInvisible()
     {
         if (IsDestroyed)

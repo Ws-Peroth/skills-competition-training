@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+
 public class Bacteria : Entity
 {
     public override void InitializeBaseData()
@@ -30,14 +31,20 @@ public class Bacteria : Entity
 
     public override void Damaged(float damage)
     {
+        if(Hp <= 0) return;
         Hp -= damage;
-        // print($"[Bacteria] Damaged : Hp = {Hp}");
+        
         if (Hp <= 0)
         {
-            IsDestroyed = true;
-            GameManager.Instance.GetScore(Score);
-            PoolManager.Instance.DestroyPrefab(gameObject, EntityType);
+            Killed();
         }
+    }
+
+    public override void Killed()
+    {
+        IsDestroyed = true;
+        GameManager.Instance.GetScore(Score);
+        PoolManager.Instance.DestroyPrefab(gameObject, EntityType);
     }
 
     protected override void Attack()

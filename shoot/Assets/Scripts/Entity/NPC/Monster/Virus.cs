@@ -47,14 +47,20 @@ public class Virus : Entity
 
     public override void Damaged(float damage)
     {
+        if(Hp <= 0) return;
         Hp -= damage;
         
         if (Hp <= 0)
         {
-            IsDestroyed = true;
-            GameManager.Instance.GetScore(Score);
-            PoolManager.Instance.DestroyPrefab(gameObject, EntityType);
+            Killed();
         }
+    }
+
+    public override void Killed()
+    {
+        IsDestroyed = true;
+        GameManager.Instance.GetScore(Score);
+        PoolManager.Instance.DestroyPrefab(gameObject, EntityType);
     }
 
     protected override void Attack()

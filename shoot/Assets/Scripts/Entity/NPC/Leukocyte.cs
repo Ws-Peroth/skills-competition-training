@@ -28,6 +28,12 @@ public class Leukocyte : Entity
     {
         return;
     }
+
+    public override void Killed()
+    {
+        return;
+    }
+
     protected override void Attack()
     {
         return;

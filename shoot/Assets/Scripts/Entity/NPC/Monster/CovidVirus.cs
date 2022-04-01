@@ -38,7 +38,7 @@ public class CovidVirus : Entity
     private IEnumerator AttackPattern()
     {
         yield return new WaitForSeconds(0.2f);
-        
+        var rot = 0;
         while (true)
         {
             var patternNumber = Random.Range(0, 3);
@@ -48,49 +48,53 @@ public class CovidVirus : Entity
                 case 0:
                     for (var i = 0; i < 5; i++)
                     {
-                        Pattern1(i * 7.5f);
+                        Pattern1(i * 7.5f + rot);
                         yield return new WaitForSeconds(0.5f);
                     }
+
                     break;
                 case 1:
                     for (var i = 0; i < 5; i++)
                     {
-                        Pattern2();
+                        Pattern2(rot);
                         yield return new WaitForSeconds(1f);
                     }
+
                     break;
                 case 2:
                     Pattern3();
                     yield return new WaitForSeconds(2);
                     break;
             }
+
+            rot++;
             yield return new WaitForSeconds(2);
         }
     }
 
     private void Pattern1(float rotation)
     {
-        for (var i = 0; i < 24; i++)
+        for (var i = 0; i < 36; i++)
         {
             var bullet = PoolManager.Instance.CreatPrefab(BulletType);
             Shoot(bullet, transform.position);
-            bullet.transform.Rotate(new Vector3(0, 0, i * 15 + rotation));
+            bullet.transform.Rotate(new Vector3(0, 0, i * 10 + rotation));
         }
     }
     
-    private void Pattern2()
+    private void Pattern2(float rotation)
     {
         for (var i = 0; i < 36; i++)
         {
             var bullet = PoolManager.Instance.CreatPrefab(BulletType);
             Shoot(bullet, transform.position);
-            bullet.transform.Rotate(new Vector3(0, 0, i * 10));
+            bullet.transform.Rotate(new Vector3(0, 0, i * 10 + rotation));
         }
     }
 
     private void Pattern3()
     {
-        for (var i = 0; i < 2; i++)
+        for (var i = 0; i < 3; i++)
         {
             GameManager.Instance.Spawn(PoolCode.Virus);   
         }
@@ -112,19 +116,26 @@ public class CovidVirus : Entity
             transform.Translate(Vector3.down * Speed);
         }
     }
-
+    
     public override void Damaged(float damage)
     {
+        if(Hp <= 0) return;
         Hp -= damage;
         
         if (Hp <= 0)
         {
-            IsDestroyed = true;
-            GameManager.Instance.StartStage2();
-            GameManager.Instance.GetScore(Score);
-            PoolManager.Instance.DestroyPrefab(gameObject, EntityType);
+            Killed();
         }
     }
+
+    public override void Killed()
+    {
+        IsDestroyed = true;
+        GameManager.Instance.GetScore(Score);
+        GameManager.Instance.StartStage2();
+        PoolManager.Instance.DestroyPrefab(gameObject, EntityType);
+    }
+    
     protected override void OnBecameInvisible()
     {
         if (IsDestroyed)

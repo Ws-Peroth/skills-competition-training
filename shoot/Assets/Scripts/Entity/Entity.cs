@@ -15,7 +15,7 @@ public abstract class Entity : MonoBehaviour
     [field: SerializeField] protected PoolCode BulletType { get; set; }
     protected abstract void Move();
     public abstract void Damaged(float damage);
-    
+    public abstract void Killed();
     // public abstract void MeleeDamaged(bool damage);
     protected abstract void Attack();
     

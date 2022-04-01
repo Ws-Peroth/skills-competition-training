@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // 적혈구
+
 public class Erythrocyte : Entity
 {
     private int _damageStack;
@@ -28,6 +29,11 @@ public class Erythrocyte : Entity
     }
 
     public override void Damaged(float damage)
+    {
+        return;
+    }
+
+    public override void Killed()
     {
         return;
     }

@@ -11,46 +11,41 @@ public class Player : Entity
     private readonly Color UnbreakableColor = new Color(0.3716981f, 0.488957f, 1, 0.5f);
 
     [SerializeField] private SpriteRenderer playerSpriteRenderer;
-    [SerializeField] private Rigidbody2D playerRigidBody;
     private const float AttackDelayTime = 0.1f;
     public const float UnbreakableTime = 3f;
-    public const float UnbreakableEffectTime = 2.5f;
-    public const float UnbreakableDamagedTime = 1.5f;
-    public const float UnbreakableNonEffectTime = 0.5f;
     public const float DamageUpTime = 5f;
     private float _timer;
-    // public int Power { get; set; }
-    public float RemainUnbreakableTime { get; set; }
     public float RemainDamageUpTime { get; set; }
 
     #region ItemFunction
 
+
+    private Coroutine _unbreakableCoroutine;
     public void GetUnbreakableItem()
     {
-        if (GameManager.Instance.IsUnbreakable)
-        {
-            return;
-        }
-
-        StartCoroutine(UnbreakableRoutine(UnbreakableTime));
+        SetUnbreakableMode(UnbreakableTime);
     }
-
-    public IEnumerator UnbreakableRoutine(float time)
+    
+    public void SetUnbreakableMode(float time)
     {
         if (GameManager.Instance.IsUnbreakable)
         {
-            yield break;
+            StopCoroutine(_unbreakableCoroutine);
         }
+
+        _unbreakableCoroutine = StartCoroutine(UnbreakableRoutine(time));
+    }
+
+    private IEnumerator UnbreakableRoutine(float time)
+    {
         GameManager.Instance.IsUnbreakable = true;
-
         playerSpriteRenderer.color = UnbreakableColor;
-
-        yield return new WaitForSeconds(time - UnbreakableNonEffectTime);
-
-        playerSpriteRenderer.color = DefaultColor;
-
-        yield return new WaitForSeconds(UnbreakableNonEffectTime);
         
+        yield return new WaitForSeconds(time - 0.5f);
+        
+        playerSpriteRenderer.color = DefaultColor;
+        
+        yield return new WaitForSeconds(0.5f);
         GameManager.Instance.IsUnbreakable = false;
     }
 
@@ -64,7 +59,7 @@ public class Player : Entity
 
         StartCoroutine(DamageUpRoutine());
     }
-    
+
     private IEnumerator DamageUpRoutine()
     {
         Damage += 3;
@@ -133,6 +128,7 @@ public class Player : Entity
             yield return null;
         }
     }
+
     protected override void Attack()
     {
         if (GameManager.Instance.Power <= 1)
@@ -188,18 +184,28 @@ public class Player : Entity
 
     public void Damaged(float damage, DamageType damageType)
     {
-        if (damageType == DamageType.Hp)
+        if (damageType == DamageType.Pain)
         {
-            if (GameManager.Instance.IsUnbreakable)
-            {
-                return;
-            }
-            GameManager.Instance.Damaged(damage, DamageType.Hp);
-            StartCoroutine(UnbreakableRoutine(UnbreakableDamagedTime));
+            GameManager.Instance.Damaged(damage, DamageType.Pain);
             return;
         }
-        
-        GameManager.Instance.Damaged(damage, DamageType.Pain);
+
+        if (GameManager.Instance.IsUnbreakable)
+        {
+            return;
+        }
+
+        SetUnbreakableMode(UnbreakableTime);
+        GameManager.Instance.Damaged(damage, DamageType.Hp);
+        if (GameManager.Instance.Hp <= 0)
+        {
+            Killed();
+        }
+    }
+
+    public override void Killed()
+    {
+        return;
     }
     
     protected override void OnBecameInvisible() { return; }
