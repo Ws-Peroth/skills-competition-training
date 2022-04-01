@@ -13,7 +13,7 @@ public enum DamageType
 
 public class GameManager : MonoBehaviour
 {
-    private const float StageTimeA = 1; 
+    private const float StageTimeA = 60;
     private const float StageTimeB = 60; 
     private const float BossDelay = 5;
     private Coroutine[] _spawnRoutine;
@@ -21,8 +21,19 @@ public class GameManager : MonoBehaviour
     [field:SerializeField] public float Hp { get; set; }
     [field:SerializeField] public int Score { get; set; }
     [field:SerializeField] public bool IsUnbreakable { get; set; }
-    public int Power { get; set; }
+    [field:SerializeField] public int Power { get; set; }
     public static GameManager Instance { get; set; }
+    private bool _isFinish;
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+    }
 
     #region MonsterSpawnInformation
     private class SpawnData
@@ -31,7 +42,7 @@ public class GameManager : MonoBehaviour
         public (float start, float end) X { get; set; }
         public (float start, float end) Delay { get; set; }
     }
-
+    
     private readonly Dictionary<PoolCode, SpawnData> _spawnerDictionary = new Dictionary<PoolCode, SpawnData>
     {
         // Bacteria
@@ -45,7 +56,7 @@ public class GameManager : MonoBehaviour
         // Erythrocyte 적혈구
         {PoolCode.Erythrocyte, new SpawnData {Y = 5.5f, X = (-2.7f, 2.7f), Delay = (5f, 10f)}},
         // Leukocyte 백혈구
-        {PoolCode.Leukocyte, new SpawnData {Y = 5.5f, X = (-2.7f, 2.7f), Delay = (1f, 2f)}},
+        {PoolCode.Leukocyte, new SpawnData {Y = 5.5f, X = (-2.7f, 2.7f), Delay = (0.1f, 0.2f)}},
         // CovidBoss
         {PoolCode.CovidBoss, new SpawnData {Y = 6.2f, X = (0f, 0f), Delay = (0f, 0f)}},
         // UpgradeCovidBoss
@@ -54,16 +65,7 @@ public class GameManager : MonoBehaviour
     
     #endregion
     
-    private void Awake()
-    {
-        if (Instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
-    }
+    #region GameRoutine
     private void Start()
     {
         Pain = 0;
@@ -71,12 +73,12 @@ public class GameManager : MonoBehaviour
 
         _spawnRoutine = new[]
         {
-            StartCoroutine(BacteriaSpawnRoutine()),
-            StartCoroutine(VirusSpawnRoutine()),
-            StartCoroutine(GermSpawnRoutine()),
-            StartCoroutine(CancerSpawnRoutine()),
-            StartCoroutine(ErythrocyteSpawnRoutine()),
-            StartCoroutine(LeukocyteSpawnRoutine()),
+            //StartCoroutine(MonsterSpawnRoutine(1, PoolCode.Bacteria)),
+            //StartCoroutine(MonsterSpawnRoutine(8, PoolCode.Germ)),
+            //StartCoroutine(MonsterSpawnRoutine(15, PoolCode.Virus)),
+            //StartCoroutine(MonsterSpawnRoutine(25, PoolCode.Cancer)),
+            //StartCoroutine(MonsterSpawnRoutine(10, PoolCode.Erythrocyte)),
+            StartCoroutine(MonsterSpawnRoutine(1, PoolCode.Leukocyte)),
         };
 
         StartCoroutine(GameRoutine());
@@ -91,7 +93,7 @@ public class GameManager : MonoBehaviour
         }
 
         yield return new WaitForSeconds(BossDelay);
-        Spawn(PoolCode.UpgradeCovidBoss);
+        Spawn(PoolCode.CovidBoss);
     }
 
     public void StartStage2()
@@ -100,6 +102,7 @@ public class GameManager : MonoBehaviour
     }
     private IEnumerator Stage2Routine()
     {
+        
         yield return new WaitForSeconds(3f);
         // UI Effect
         Debug.Log("UI Effect");
@@ -107,14 +110,15 @@ public class GameManager : MonoBehaviour
         // Routine Reset
         _spawnRoutine = new[]
         {
-            StartCoroutine(BacteriaSpawnRoutine()),
-            StartCoroutine(VirusSpawnRoutine()),
-            StartCoroutine(GermSpawnRoutine()),
-            StartCoroutine(CancerSpawnRoutine()),
-            StartCoroutine(ErythrocyteSpawnRoutine()),
-            StartCoroutine(LeukocyteSpawnRoutine()),
+            StartCoroutine(MonsterSpawnRoutine(1, PoolCode.Bacteria)),
+            StartCoroutine(MonsterSpawnRoutine(8, PoolCode.Germ)),
+            StartCoroutine(MonsterSpawnRoutine(15, PoolCode.Virus)),
+            StartCoroutine(MonsterSpawnRoutine(25, PoolCode.Cancer)),
+            StartCoroutine(MonsterSpawnRoutine(10, PoolCode.Erythrocyte)),
+            StartCoroutine(MonsterSpawnRoutine(1, PoolCode.Leukocyte)),
         };
         yield return new WaitForSeconds(StageTimeB);
+        Debug.Log($"{_spawnRoutine.Length}");
         foreach (var coroutine in _spawnRoutine)
         {
             StopCoroutine(coroutine);
@@ -123,76 +127,20 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(BossDelay);
         Spawn(PoolCode.UpgradeCovidBoss);
     }
-    private IEnumerator BacteriaSpawnRoutine()
+
+    private IEnumerator MonsterSpawnRoutine(float spawnTime, PoolCode monsterType)
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(spawnTime);
         
         while (true)
         {
-            var delay = Spawn(PoolCode.Bacteria);
+            var delay = Spawn(monsterType);
             yield return new WaitForSeconds(delay);
         }
     }
     
-    private IEnumerator GermSpawnRoutine()
-    {
-        yield return new WaitForSeconds(8f);
-        
-        while (true)
-        {
-            var delay = Spawn(PoolCode.Germ);
-            yield return new WaitForSeconds(delay);
-        }
-    }
-
-    private IEnumerator VirusSpawnRoutine()
-    {
-        yield return new WaitForSeconds(15f);
-        
-        while (true)
-        {
-            var delay = Spawn(PoolCode.Virus);
-            yield return new WaitForSeconds(delay);
-        }
-    }
-
-    private IEnumerator CancerSpawnRoutine()
-    {
-        yield return new WaitForSeconds(25f);
-        
-        while (true)
-        {
-            var delay = Spawn(PoolCode.Cancer);
-            yield return new WaitForSeconds(delay);
-        }
-    }
-
-    private IEnumerator ErythrocyteSpawnRoutine()
-    {
-        // 적혈수 소환 루틴
-        yield return new WaitForSeconds(10f);
-
-        while (true)
-        {
-            var delay = Spawn(PoolCode.Erythrocyte);
-            yield return new WaitForSeconds(delay);
-        }
-    }
-
-    private IEnumerator LeukocyteSpawnRoutine()
-    {
-        // 백혈구 소환 루틴
-        yield return new WaitForSeconds(1f);
-
-        while (true)
-        {
-            var delay = Spawn(PoolCode.Leukocyte);
-            yield return new WaitForSeconds(delay);
-        }
-    }
-
     private static float RandNum((float start, float end) tuple) => Random.Range(tuple.start, tuple.end);
-    
+
     public float Spawn(PoolCode monsterType)
     {
         var spawnData = _spawnerDictionary[monsterType];
@@ -207,22 +155,38 @@ public class GameManager : MonoBehaviour
         mob.SetActive(true);
         mob.GetComponent<Entity>().InitializeBaseData();
     }
-    
+    #endregion
+
     public void Damaged(float damage, DamageType damageType)
     {
         if (damageType == DamageType.Hp)
         {
             Debug.Log($"Get Hp Damage {damage}");
             Hp = Hp - damage < 0 ? 0 : Hp - damage;
-            return;
+        }
+        else
+        {
+            Debug.Log($"Get Pain Damage {damage}");
+            Pain = Pain + damage > 100 ? 100 : Pain + damage;
         }
 
-        Debug.Log($"Get Pain Damage {damage}");
-        Pain = Pain + damage > 100 ? 100 : Pain + damage;
+        if (Hp <= 0 || Pain >= 100)
+        {
+            GameOver();
+        }
+
     }
 
     public void GetScore(int score)
     {
         Score += score;
+    }
+
+    private void GameOver()
+    {
+        if(_isFinish) return;
+        _isFinish = true;
+        var finishScore = Score;
+        Debug.Log($"[GameOver] Score : {finishScore}");
     }
 }

@@ -44,7 +44,11 @@ public class PoolManager : MonoBehaviour
     
     public GameObject[] prefabCombine;
     public static PoolManager Instance { get; set; }
-    private Queue<GameObject>[] _poolCombine = new Queue<GameObject>[(int)PoolCode.MaxCount];
+    private readonly Queue<GameObject>[] _deactivatePrefabPoolCombine = new Queue<GameObject>[(int)PoolCode.MaxCount];
+    
+    
+    private readonly List<GameObject>[] _activatePrefabPoolCombine = new List<GameObject>[(int)PoolCode.MaxCount];
+
 
     public static int PoolCodeIndex(PoolCode code) => (int) code;
     
@@ -58,11 +62,10 @@ public class PoolManager : MonoBehaviour
         
         Instance = this;
 
-        _poolCombine = new Queue<GameObject>[(int)PoolCode.MaxCount];
-
-        for (var i = 0; i < _poolCombine.Length; i++)
+        for (var i = 0; i < _deactivatePrefabPoolCombine.Length; i++)
         {
-            _poolCombine[i] = new Queue<GameObject>();
+            _deactivatePrefabPoolCombine[i] = new Queue<GameObject>();
+            _activatePrefabPoolCombine[i] = new List<GameObject>();
         }
     }
 
@@ -75,7 +78,7 @@ public class PoolManager : MonoBehaviour
 
     public void DestroyPrefab(GameObject prefab, PoolCode poolIndex)
     {
-        var pool = _poolCombine[PoolCodeIndex(poolIndex)];
+        var pool = _deactivatePrefabPoolCombine[PoolCodeIndex(poolIndex)];
         pool.Enqueue(prefab);
         prefab.SetActive(false);
     }
@@ -83,7 +86,7 @@ public class PoolManager : MonoBehaviour
     public GameObject CreatPrefab(PoolCode poolIndex)
     {
         var index = PoolCodeIndex(poolIndex);
-        var pool = _poolCombine[index];
+        var pool = _deactivatePrefabPoolCombine[index];
         
         if (pool.Count != 0)
         {
@@ -91,6 +94,9 @@ public class PoolManager : MonoBehaviour
         }
 
         var prefab = Instantiate(prefabCombine[index], transform);
+        
+        var activatePrefabList = _activatePrefabPoolCombine[index];
+        activatePrefabList.Add(prefab);
         prefab.SetActive(false);
         return prefab;
     }

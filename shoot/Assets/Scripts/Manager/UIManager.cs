@@ -22,7 +22,7 @@ public class UIManager : MonoBehaviour
 
         hpBar.value = hp / 100f;
         painBar.value = pain / 100f;
-        scoreText.text = score.ToString();
+        scoreText.text = $"Score : {score.ToString()}";
         hpText.text = $"{hp:F0}%";
         painText.text = $"{pain:F0}%";
         weaponLevelText.text = $"Weapon Level : {power}";
