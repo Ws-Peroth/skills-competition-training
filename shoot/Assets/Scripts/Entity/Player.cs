@@ -17,10 +17,32 @@ public class Player : Entity
     private float _timer;
     public float RemainDamageUpTime { get; set; }
 
-    #region ItemFunction
-
-
     private Coroutine _unbreakableCoroutine;
+    
+    #region UnbreakableRoutine
+    
+    private void Update()
+    {
+        if (!GameManager.Instance.IsForcedUnbreakableChanged) return;
+
+        GameManager.Instance.IsForcedUnbreakableChanged = false;
+
+        GameManager.Instance.IsUnbreakable = false;
+        if (_unbreakableCoroutine != null)
+        {
+            StopCoroutine(_unbreakableCoroutine);
+        }
+
+        if (GameManager.Instance.ForcedUnbreakable)
+        {
+            playerSpriteRenderer.color = UnbreakableColor;
+        }
+        else
+        {
+            playerSpriteRenderer.color = DefaultColor;
+        }
+    }
+
     public void GetUnbreakableItem()
     {
         SetUnbreakableMode(UnbreakableTime);
@@ -28,6 +50,10 @@ public class Player : Entity
     
     public void SetUnbreakableMode(float time)
     {
+        if (GameManager.Instance.ForcedUnbreakable)
+        {
+            return;
+        }
         if (GameManager.Instance.IsUnbreakable)
         {
             StopCoroutine(_unbreakableCoroutine);
@@ -48,7 +74,10 @@ public class Player : Entity
         yield return new WaitForSeconds(0.5f);
         GameManager.Instance.IsUnbreakable = false;
     }
+    
+    #endregion
 
+    #region DamageUpRoutine
     public void GetDamageUpItem()
     {
         if (RemainDamageUpTime > 0)
@@ -190,11 +219,9 @@ public class Player : Entity
             return;
         }
 
-        if (GameManager.Instance.IsUnbreakable)
-        {
-            return;
-        }
-
+        if (GameManager.Instance.ForcedUnbreakable) { return; }
+        if (GameManager.Instance.IsUnbreakable) { return; }
+        
         SetUnbreakableMode(UnbreakableTime);
         GameManager.Instance.Damaged(damage, DamageType.Hp);
         if (GameManager.Instance.Hp <= 0)

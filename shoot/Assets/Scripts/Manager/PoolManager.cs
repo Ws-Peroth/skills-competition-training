@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public enum PoolCode
@@ -99,5 +100,25 @@ public class PoolManager : MonoBehaviour
         activatePrefabList.Add(prefab);
         prefab.SetActive(false);
         return prefab;
+    }
+
+    public void DestroyAllPrefabs(PoolCode code)
+    {
+        var pool = _activatePrefabPoolCombine[PoolCodeIndex(code)];
+        foreach (var prefab in pool)
+        {
+            prefab.GetComponent<Entity>().Killed();
+        }
+    }
+    
+    public void DestroyEntirePrefabs()
+    {
+        foreach (var pool in _activatePrefabPoolCombine)
+        {
+            foreach (var prefab in pool)
+            {
+                prefab.SetActive(false);
+            }
+        }
     }
 }

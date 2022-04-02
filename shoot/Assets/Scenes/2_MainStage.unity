@@ -200,7 +200,6 @@ MonoBehaviour:
   <EntityType>k__BackingField: 0
   <BulletType>k__BackingField: 0
   playerSpriteRenderer: {fileID: 108109442}
-  playerRigidBody: {fileID: 108109440}
 --- !u!212 &108109442
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -944,6 +943,7 @@ MonoBehaviour:
   <Hp>k__BackingField: 0
   <Score>k__BackingField: 0
   <IsUnbreakable>k__BackingField: 0
+  <ForcedUnbreakable>k__BackingField: 0
   <Power>k__BackingField: 0
 --- !u!4 &663397738
 Transform:
@@ -1222,6 +1222,10 @@ MonoBehaviour:
   hpText: {fileID: 806629638}
   painText: {fileID: 485378985}
   weaponLevelText: {fileID: 833481687}
+  setPlayerHpText: {fileID: 8354055740273053628}
+  setPlayerPainText: {fileID: 8354055740807188142}
+  setPlayerHpSlider: {fileID: 8354055741038874761}
+  setPlayerPainSlider: {fileID: 8354055741295476718}
 --- !u!1 &806629636
 GameObject:
   m_ObjectHideFlags: 0
@@ -3330,7 +3334,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8354055739858676315}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 758114946}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SubmitPain
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8354055739858676315
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3560,7 +3576,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8354055739944238344}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 758114946}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SetPlayerPower
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 5
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8354055739991614264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3604,7 +3632,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8354055739991614265}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 758114946}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: ForcedUnbreakableMode
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8354055739991614265
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3761,7 +3801,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8354055740049999873}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 758114946}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SpawnRedCell
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8354055740049999873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3929,7 +3981,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8354055740061035559}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 758114946}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SetPlayerPower
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 3
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8354055740061035559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4080,7 +4144,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8354055740195904496}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 758114946}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: KillAllMonster
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &8354055740214295184
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4148,8 +4224,8 @@ RectTransform:
   m_Father: {fileID: 913100138}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 600, y: 1300}
   m_Pivot: {x: 0, y: 1}
@@ -4265,7 +4341,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8354055740238506531}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 758114946}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SetPlayerPower
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 4
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8354055740238506531
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4945,7 +5033,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.34509805, b: 0.34509805, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -5353,7 +5441,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8354055740744731610}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 758114946}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SpawnWhiteCell
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8354055740744731610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5610,7 +5710,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8354055740842582848}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 758114946}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SetStage
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &8354055740855065968
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5669,7 +5781,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.3882353, g: 0.3882353, b: 0.3882353, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -5976,7 +6088,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8354055741076212869}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 758114946}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SetStage
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8354055741076212869
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6174,7 +6298,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8354055741093253192}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 758114946}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SubmitPlayerHp
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &8354055741106561968
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6417,7 +6553,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8354055741219442380}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 758114946}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: ForcedUnbreakableMode
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &8354055741219442380
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6627,7 +6775,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8354055741413763502}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 758114946}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SetPlayerPower
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8354055741413763502
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6716,7 +6876,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.3882353, g: 0.3882353, b: 0.3882353, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -6902,7 +7062,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8354055741503862892}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 758114946}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SetPlayerPower
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8354055741503862892
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7210,7 +7382,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.5058824, g: 0.78431374, b: 0.34509805, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
