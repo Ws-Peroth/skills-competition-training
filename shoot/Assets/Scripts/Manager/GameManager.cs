@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 public enum DamageType
@@ -14,27 +15,30 @@ public enum DamageType
 
 public class GameManager : MonoBehaviour
 {
+    private const float FadeEffectTime = 2f;
     private const float StageTimeA = 60;
     private const float StageTimeB = 60; 
     private const float BossDelay = 5;
     private Coroutine[] _spawnRoutine;
     private Coroutine _gameRoutine;
+    public int Stage { get; set; }
     [field:SerializeField] public float Pain { get; set; }
     [field:SerializeField] public float Hp { get; set; }
     [field:SerializeField] public int Score { get; set; }
     [field:SerializeField] public bool IsUnbreakable { get; set; }
-
-    [SerializeField] private bool _forcedUnbreakable;
+    [field: SerializeField] public bool IsForcedUnbreakableChanged { get; set; }
+    
+    [SerializeField] private bool forcedUnbreakable;
     public bool ForcedUnbreakable
     {
-        get => _forcedUnbreakable;
+        get => forcedUnbreakable;
         set
         {
             IsForcedUnbreakableChanged = true;
-            _forcedUnbreakable = value;
+            forcedUnbreakable = value;
         }
     }
-    [field: SerializeField] public bool IsForcedUnbreakableChanged { get; set; }
+
     [field:SerializeField] public int Power { get; set; }
     public static GameManager Instance { get; set; }
     private bool _isFinish;
@@ -85,6 +89,15 @@ public class GameManager : MonoBehaviour
         Pain = 0;
         Hp = 100;
 
+        _gameRoutine = StartCoroutine(GameRoutine());
+    }
+
+    private IEnumerator GameRoutine()
+    {
+        Stage = 1;
+        UIManager.Instance.FadeOutEffect(FadeEffectTime);
+        yield return new WaitForSeconds(FadeEffectTime + 0.5f);
+        
         _spawnRoutine = new[]
         {
             StartCoroutine(MonsterSpawnRoutine(1, PoolCode.Bacteria)),
@@ -95,11 +108,6 @@ public class GameManager : MonoBehaviour
             StartCoroutine(MonsterSpawnRoutine(1, PoolCode.Leukocyte)),
         };
 
-        _gameRoutine = StartCoroutine(GameRoutine());
-    }
-
-    private IEnumerator GameRoutine()
-    {
         yield return new WaitForSeconds(StageTimeA);
         Debug.Log("Stop Spawn");
         foreach (var coroutine in _spawnRoutine)
@@ -112,20 +120,29 @@ public class GameManager : MonoBehaviour
     }
     public void StartStage2()
     {
+        Stage = 2;
         StopAllCoroutines();
         
         foreach (var coroutine in _spawnRoutine)
         {
             StopCoroutine(coroutine);
         }
+
         StartCoroutine(Stage2Routine());
     }
     private IEnumerator Stage2Routine()
     {
-        yield return new WaitForSeconds(3f);
-        // UI Effect
-        Debug.Log("UI Effect");
-        yield return new WaitForSeconds(3f);
+        PoolManager.Instance.DestroyEntirePrefabs();
+        yield return new WaitForSeconds(2f);
+        
+        UIManager.Instance.FadeInEffect(FadeEffectTime);
+        yield return new WaitForSeconds(FadeEffectTime);
+
+        yield return new WaitForSeconds(0.5f);
+        
+        UIManager.Instance.FadeOutEffect(FadeEffectTime);
+        yield return new WaitForSeconds(FadeEffectTime);
+        
         // Routine Reset
         _spawnRoutine = new[]
         {
@@ -147,6 +164,21 @@ public class GameManager : MonoBehaviour
         Spawn(PoolCode.UpgradeCovidBoss);
     }
 
+    public void Ending()
+    {
+        PoolManager.Instance.DestroyEntirePrefabs();
+        UIManager.Instance.FadeInEffect(FadeEffectTime);
+        // If New Record
+        var lastScore = ScoreManager.Instance.GetLastScore();
+        if (Score > lastScore)
+        {
+            SceneManager.LoadScene(1);
+            return;
+        }
+        // Show LeaderBoard
+        // Else Goto Menu
+    }
+    
     private IEnumerator MonsterSpawnRoutine(float spawnTime, PoolCode monsterType)
     {
         yield return new WaitForSeconds(spawnTime);

@@ -134,6 +134,7 @@ private PoolCode _bulletType;
         Debug.Log("Ending");
         IsDestroyed = true;
         GameManager.Instance.GetScore(Score);
+        GameManager.Instance.Ending();
         PoolManager.Instance.DestroyPrefab(gameObject, EntityType);
     }
     
