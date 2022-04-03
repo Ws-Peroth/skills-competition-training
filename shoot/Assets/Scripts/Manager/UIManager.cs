@@ -9,12 +9,12 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; set; }
     [SerializeField] private Image fadeImage;
-    
+
     [SerializeField] private Slider hpBar;
     [SerializeField] private Slider painBar;
     [SerializeField] private Slider setPlayerHpSlider;
     [SerializeField] private Slider setPlayerPainSlider;
-    
+
     [SerializeField] private Text scoreText;
     [SerializeField] private Text hpText;
     [SerializeField] private Text painText;
@@ -29,8 +29,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private string UserName { get; set; }
 
     [SerializeField] private GameObject inputScoreScreen;
-    [SerializeField] private GameObject leaderBoardScreen;   
-    
+    [SerializeField] private GameObject leaderBoardScreen;
+
     private Coroutine _fadeRoutine;
 
     private void Awake()
@@ -55,7 +55,7 @@ public class UIManager : MonoBehaviour
         var stage = GameManager.Instance.Stage;
         var setHp = setPlayerHpSlider.value;
         var setPain = setPlayerPainSlider.value;
-        
+
         hpBar.value = hp / 100f;
         painBar.value = pain / 100f;
         scoreText.text = $"Score : {score.ToString()}";
@@ -69,21 +69,27 @@ public class UIManager : MonoBehaviour
 
     public void OpenInputScoreScreen()
     {
+        if (fadeImage.gameObject.activeSelf)
+        {
+            fadeImage.gameObject.SetActive(false);
+        }
+
         inputUserNameScoreText.text = $"Score : {GameManager.Instance.Score.ToString()}";
         inputScoreScreen.SetActive(true);
     }
+
     public void OpenLeaderBoardScreen()
     {
         scoreRankText.text = "";
         nameRankText.text = "";
         var leaderBoard = ScoreManager.Instance.ScoreList;
-        
+
         for (var i = 0; i < leaderBoard.Count; i++)
         {
-            scoreRankText.text += $"{i}. {leaderBoard[i].score.ToString()}\n";
-            nameRankText.text += $"{leaderBoard[i].name}\n";
+            scoreRankText.text += $"{leaderBoard[i].score.ToString()}\n";
+            nameRankText.text += $"{(i + 1).ToString()}. {leaderBoard[i].name}\n";
         }
-        
+
         leaderBoardScreen.SetActive(true);
     }
 
@@ -94,15 +100,17 @@ public class UIManager : MonoBehaviour
 
     public void FinishInputName()
     {
-        leaderBoardScreen.SetActive(true);
+        ScoreManager.Instance.AddScore(UserName, GameManager.Instance.Score);
+        OpenLeaderBoardScreen();
     }
 
     public void GoToMenu()
     {
         SceneManager.LoadScene(1);
     }
-    
+
     #region CheatUI
+
     public void SetStage(int stage)
     {
         PoolManager.Instance.DestroyEntirePrefabs();
@@ -157,47 +165,21 @@ public class UIManager : MonoBehaviour
     {
         GameManager.Instance.Spawn(PoolCode.Erythrocyte);
     }
+
     #endregion
-    
-    #region FadeEffect
-    
-    public void FadeInEffect(float time)
-    {
-        if (_fadeRoutine != null)
-        {
-            StopCoroutine(_fadeRoutine);
-        }
-        _fadeRoutine = StartCoroutine(FadeEffect(time, true));
-    }
 
     public void FadeOutEffect(float time)
     {
-        if (_fadeRoutine != null)
-        {
-            StopCoroutine(_fadeRoutine);
-        }
-
-        _fadeRoutine = StartCoroutine(FadeEffect(time, false));
+        EffectManager.Instance.FadeOutEffect(fadeImage, time);
     }
 
-    private IEnumerator FadeEffect(float time, bool isFadeIn)
+    public void FadeInEffect(float time)
     {
-        fadeImage.gameObject.SetActive(true);
-        fadeImage.color = new Color(0, 0, 0, isFadeIn ? 0f : 1f);
-        var loopCount = time / 0.01f;
-        var deltaValue = time / loopCount;
-
-        for (var i = loopCount; i > 0; i--)
-        {
-            Debug.Log($"{i}");
-            var alpha = fadeImage.color.a + (isFadeIn ? deltaValue : -deltaValue);
-            fadeImage.color = new Color(0, 0, 0, alpha);
-            yield return new WaitForSeconds(0.01f);
-        }
-
-        Debug.Log(isFadeIn ? "Fade In Finish" : "Fade Out Finish");
-        fadeImage.gameObject.SetActive(isFadeIn);
-        yield break;
+        EffectManager.Instance.FadeInEffect(fadeImage, time);
     }
-    #endregion
+
+    public void SetFadeImageActive(bool active)
+    {
+        fadeImage.gameObject.SetActive(active);
+    }
 }

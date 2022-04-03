@@ -2,12 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager Instance;
-    public const int LastRank = 5;
-    public List<(string name, int score)> ScoreList = new List<(string name, int score)>();
+    private const int LastRank = 5;
+    public readonly List<(string name, int score)> ScoreList = new List<(string name, int score)>();
 
     private void Awake()
     {
@@ -20,8 +21,25 @@ public class ScoreManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public int GetLastScoreIndex() => ScoreList.Count > LastRank ? LastRank - 1 : ScoreList.Count - 1;
-    public int GetLastScore() => ScoreList[GetLastScoreIndex()].score;
+    public int GetLastScoreIndex()
+    {
+        if (ScoreList.Count > LastRank)
+        {
+            return LastRank - 1;
+        }
+
+        return ScoreList.Count - 1;
+    }
+
+    public int GetLastScore()
+    {
+        var lastIndex = GetLastScoreIndex();
+        if (lastIndex < 0)
+        {
+            return -1;
+        }
+        return ScoreList[lastIndex].score;
+    }
 
     public void AddScore(string userName, int score)
     {

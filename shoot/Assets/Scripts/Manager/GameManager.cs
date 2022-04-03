@@ -16,8 +16,8 @@ public enum DamageType
 public class GameManager : MonoBehaviour
 {
     private const float FadeEffectTime = 2f;
-    private const float StageTimeA = 60;
-    private const float StageTimeB = 60; 
+    private const float StageTimeA = 0;
+    private const float StageTimeB = 0; 
     private const float BossDelay = 5;
     private Coroutine[] _spawnRoutine;
     private Coroutine _gameRoutine;
@@ -86,6 +86,7 @@ public class GameManager : MonoBehaviour
     #region GameRoutine
     private void Start()
     {
+        Score = 0;
         Pain = 0;
         Hp = 100;
 
@@ -97,6 +98,7 @@ public class GameManager : MonoBehaviour
         Stage = 1;
         UIManager.Instance.FadeOutEffect(FadeEffectTime);
         yield return new WaitForSeconds(FadeEffectTime + 0.5f);
+        UIManager.Instance.SetFadeImageActive(false);
         
         _spawnRoutine = new[]
         {
@@ -142,6 +144,7 @@ public class GameManager : MonoBehaviour
         
         UIManager.Instance.FadeOutEffect(FadeEffectTime);
         yield return new WaitForSeconds(FadeEffectTime);
+        UIManager.Instance.SetFadeImageActive(false);
         
         // Routine Reset
         _spawnRoutine = new[]
@@ -170,11 +173,13 @@ public class GameManager : MonoBehaviour
         UIManager.Instance.FadeInEffect(FadeEffectTime);
         // If New Record
         var lastScore = ScoreManager.Instance.GetLastScore();
-        if (Score > lastScore)
+        if (Score < lastScore)
         {
             SceneManager.LoadScene(1);
             return;
         }
+        
+        UIManager.Instance.OpenInputScoreScreen();
         // Show LeaderBoard
         // Else Goto Menu
     }
