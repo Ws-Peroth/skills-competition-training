@@ -16,8 +16,8 @@ public enum DamageType
 public class GameManager : MonoBehaviour
 {
     private const float FadeEffectTime = 2f;
-    private const float StageTimeA = 0;
-    private const float StageTimeB = 0; 
+    private const float StageTimeA = 60;
+    private const float StageTimeB = 60; 
     private const float BossDelay = 5;
     private Coroutine[] _spawnRoutine;
     private Coroutine _gameRoutine;

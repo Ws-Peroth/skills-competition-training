@@ -7,8 +7,8 @@ using UnityEngine.Serialization;
 
 public class Player : Entity
 {
-    private readonly Color DefaultColor = new Color(0.3716981f, 0.488957f, 1, 1);
-    private readonly Color UnbreakableColor = new Color(0.3716981f, 0.488957f, 1, 0.5f);
+    private readonly Color DefaultColor = new Color(1, 1, 1, 1);
+    private readonly Color UnbreakableColor = new Color(1, 1, 1, 0.5f);
 
     [SerializeField] private SpriteRenderer playerSpriteRenderer;
     private const float AttackDelayTime = 0.1f;

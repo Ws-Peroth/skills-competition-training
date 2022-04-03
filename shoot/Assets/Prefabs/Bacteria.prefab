@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 1603777887572906229}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -74,8 +74,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: -2413806693520163455, guid: ebe73ca9363db456bacf42c025bb4847, type: 3}
-  m_Color: {r: 1, g: 0.23370314, b: 0.18431371, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 5d48e8b955fbc7743af10f41f63e4217, type: 3}
+  m_Color: {r: 1, g: 0.062499996, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -121,7 +121,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 2
 --- !u!114 &1603777887572906223
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -138,4 +138,6 @@ MonoBehaviour:
   <Hp>k__BackingField: 0
   <Speed>k__BackingField: 0
   <Damage>k__BackingField: 0
+  <Score>k__BackingField: 0
   <EntityType>k__BackingField: 0
+  <BulletType>k__BackingField: 0
