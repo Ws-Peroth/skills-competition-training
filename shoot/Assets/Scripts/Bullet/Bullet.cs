@@ -18,7 +18,6 @@ public abstract class Bullet : MonoBehaviour
     /// </summary>
     public abstract void InitializeBaseData();
     
-    
     protected virtual void OnBecameInvisible() { }
 
     protected virtual void OnTriggerEnter2D(Collider2D col)

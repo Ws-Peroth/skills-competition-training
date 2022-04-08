@@ -16,7 +16,6 @@ public abstract class Entity : MonoBehaviour
     protected abstract void Move();
     public abstract void Damaged(float damage);
     public abstract void Killed();
-    // public abstract void MeleeDamaged(bool damage);
     protected abstract void Attack();
     
     /// <summary>

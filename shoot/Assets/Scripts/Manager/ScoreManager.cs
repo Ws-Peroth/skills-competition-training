@@ -45,6 +45,7 @@ public class ScoreManager : MonoBehaviour
     {
         ScoreList.Add((userName, score));
         ScoreList.Sort((a, b) => a.score.CompareTo(b.score));
+        ScoreList.Reverse();
         if (ScoreList.Count > LastRank)
         {
             ScoreList.RemoveAt(LastRank);

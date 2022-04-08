@@ -1,8 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
@@ -16,19 +13,20 @@ public enum DamageType
 public class GameManager : MonoBehaviour
 {
     private const float FadeEffectTime = 2f;
-    private const float StageTimeA = 60;
-    private const float StageTimeB = 60; 
+    private const float StageTimeA = 0;
+    private const float StageTimeB = 0;
     private const float BossDelay = 5;
     private Coroutine[] _spawnRoutine;
     private Coroutine _gameRoutine;
     public int Stage { get; set; }
-    [field:SerializeField] public float Pain { get; set; }
-    [field:SerializeField] public float Hp { get; set; }
-    [field:SerializeField] public int Score { get; set; }
-    [field:SerializeField] public bool IsUnbreakable { get; set; }
+    [field: SerializeField] public float Pain { get; set; }
+    [field: SerializeField] public float Hp { get; set; }
+    [field: SerializeField] public int Score { get; set; }
+    [field: SerializeField] public bool IsUnbreakable { get; set; }
     [field: SerializeField] public bool IsForcedUnbreakableChanged { get; set; }
-    
+
     [SerializeField] private bool forcedUnbreakable;
+
     public bool ForcedUnbreakable
     {
         get => forcedUnbreakable;
@@ -39,9 +37,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    [field:SerializeField] public int Power { get; set; }
+    [field: SerializeField] public int Power { get; set; }
     public static GameManager Instance { get; set; }
     private bool _isFinish;
+
     private void Awake()
     {
         if (Instance != null)
@@ -53,14 +52,16 @@ public class GameManager : MonoBehaviour
         Instance = this;
 
     }
+
     #region MonsterSpawnInformation
+
     private class SpawnData
     {
         public float Y { get; set; }
         public (float start, float end) X { get; set; }
         public (float start, float end) Delay { get; set; }
     }
-    
+
     private readonly Dictionary<PoolCode, SpawnData> _spawnerDictionary = new Dictionary<PoolCode, SpawnData>
     {
         // Bacteria
@@ -80,10 +81,11 @@ public class GameManager : MonoBehaviour
         // UpgradeCovidBoss
         {PoolCode.UpgradeCovidBoss, new SpawnData {Y = 6.2f, X = (0f, 0f), Delay = (0f, 0f)}},
     };
-    
+
     #endregion
-    
+
     #region GameRoutine
+
     private void Start()
     {
         Score = 0;
@@ -99,7 +101,7 @@ public class GameManager : MonoBehaviour
         UIManager.Instance.FadeOutEffect(FadeEffectTime);
         yield return new WaitForSeconds(FadeEffectTime + 0.5f);
         UIManager.Instance.SetFadeImageActive(false);
-        
+
         _spawnRoutine = new[]
         {
             StartCoroutine(MonsterSpawnRoutine(1, PoolCode.Bacteria)),
@@ -120,11 +122,12 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(BossDelay);
         Spawn(PoolCode.CovidBoss);
     }
+
     public void StartStage2()
     {
         Stage = 2;
         StopAllCoroutines();
-        
+
         foreach (var coroutine in _spawnRoutine)
         {
             StopCoroutine(coroutine);
@@ -132,20 +135,21 @@ public class GameManager : MonoBehaviour
 
         StartCoroutine(Stage2Routine());
     }
+
     private IEnumerator Stage2Routine()
     {
         PoolManager.Instance.DestroyEntirePrefabs();
         yield return new WaitForSeconds(2f);
-        
+
         UIManager.Instance.FadeInEffect(FadeEffectTime);
         yield return new WaitForSeconds(FadeEffectTime);
 
         yield return new WaitForSeconds(0.5f);
-        
+
         UIManager.Instance.FadeOutEffect(FadeEffectTime);
         yield return new WaitForSeconds(FadeEffectTime);
         UIManager.Instance.SetFadeImageActive(false);
-        
+
         // Routine Reset
         _spawnRoutine = new[]
         {
@@ -162,39 +166,51 @@ public class GameManager : MonoBehaviour
         {
             StopCoroutine(coroutine);
         }
-        
+
         yield return new WaitForSeconds(BossDelay);
         Spawn(PoolCode.UpgradeCovidBoss);
     }
 
     public void Ending()
     {
+        StartCoroutine(EndingEffect());
+    }
+
+    private IEnumerator EndingEffect()
+    {
         PoolManager.Instance.DestroyEntirePrefabs();
+        yield return new WaitForSeconds(5f);
         UIManager.Instance.FadeInEffect(FadeEffectTime);
         // If New Record
         var lastScore = ScoreManager.Instance.GetLastScore();
+        if (ScoreManager.Instance.GetLastScoreIndex() < 5)
+        {
+            UIManager.Instance.OpenInputScoreScreen();
+            yield break;
+        }
+
         if (Score < lastScore)
         {
             SceneManager.LoadScene(1);
-            return;
+            yield break;
         }
-        
+
         UIManager.Instance.OpenInputScoreScreen();
         // Show LeaderBoard
         // Else Goto Menu
     }
-    
+
     private IEnumerator MonsterSpawnRoutine(float spawnTime, PoolCode monsterType)
     {
         yield return new WaitForSeconds(spawnTime);
-        
+
         while (true)
         {
             var delay = Spawn(monsterType);
             yield return new WaitForSeconds(delay);
         }
     }
-    
+
     private static float RandNum((float start, float end) tuple) => Random.Range(tuple.start, tuple.end);
 
     public float Spawn(PoolCode monsterType)
@@ -211,6 +227,7 @@ public class GameManager : MonoBehaviour
         mob.SetActive(true);
         mob.GetComponent<Entity>().InitializeBaseData();
     }
+
     #endregion
 
     public void SetPlayerHp(float hp)
@@ -230,6 +247,7 @@ public class GameManager : MonoBehaviour
             GameOver();
         }
     }
+
     public void Damaged(float damage, DamageType damageType)
     {
         if (damageType == DamageType.Hp)
@@ -247,7 +265,6 @@ public class GameManager : MonoBehaviour
         {
             GameOver();
         }
-
     }
 
     public void GetScore(int score)
@@ -257,7 +274,7 @@ public class GameManager : MonoBehaviour
 
     private void GameOver()
     {
-        if(_isFinish) return;
+        if (_isFinish) return;
         _isFinish = true;
         var finishScore = Score;
         Debug.Log($"[GameOver] Score : {finishScore}");

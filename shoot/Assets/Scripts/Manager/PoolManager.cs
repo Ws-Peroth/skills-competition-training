@@ -45,9 +45,7 @@ public class PoolManager : MonoBehaviour
     
     public GameObject[] prefabCombine;
     public static PoolManager Instance { get; set; }
-    private readonly Queue<GameObject>[] _deactivatePrefabPoolCombine = new Queue<GameObject>[(int)PoolCode.MaxCount];
-    
-    
+    private readonly Queue<GameObject>[] _deactivatePrefabPoolCombine = new Queue<GameObject>[(int) PoolCode.MaxCount];
     private readonly List<GameObject>[] _activatePrefabPoolCombine = new List<GameObject>[(int)PoolCode.MaxCount];
 
 
